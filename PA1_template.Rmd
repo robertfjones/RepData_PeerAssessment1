@@ -1,25 +1,125 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+  Title: "Reproducible Research: Peer Assessment 1"
+  Author: "Robert Jones"
 ---
+  
+#Reproducible Research Assessment 1 - Activity Analysis
+  
+##Review Criteria  
+1. Code for reading in the dataset and/or processing the data
+2. Histogram of the total number of steps taken each day
+3. Mean and median number of steps taken each day
+4. Time series plot of the average number of steps taken
+5. The 5-minute interval that, on average, contains the maximum number of steps
+6. Code to describe and show a strategy for imputing missing data
+7. Histogram of the total number of steps taken each day after missing values are imputed
+8. Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+9. All of the R code needed to reproduce the results (numbers, plots, etc.) in the report
 
 
-## Loading and preprocessing the data
+```{r setup, include=T}
+#Open packages
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(ggplot2)
+
+#Set default knitr options
+opts_chunk$set(echo = T)
+
+```
+
+## Loading and preprocessing the data (Template Heading)
+###Download Data and Process Data
+``` {r data.download}
+#Download and Unzip Data
+data.url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+download.file(data.url,destfile = "activity.zip")
+unzip("activity.zip")
+activity.data <- read.csv("activity.csv")
+
+head(activity.data)
+
+#Pre-process data with grouped summaries
+activity.by.day <- group_by(activity.data, date) %>% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))
+
+activity.by.interval <- group_by(activity.data, interval) %>% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))
+```
+
+## What is mean total number of steps taken per day? (Template Heading)
+###Total Steps Per Day as Histogram and Table of Daily Statistics
+```{r histogram}
+#plot histogram
+total.hist <- ggplot() + geom_histogram(data = activity.by.day, aes(total.steps), binwidth = 2000) +
+              ggtitle("Histogram of Total Steps Each Data")
+
+print(total.hist)
+
+#Generate daily summary (mean, median and also total)
+kable(activity.by.day, caption = "Daily Summary Table")
+```
+
+## What is the average daily activity pattern? (Template Heading)
+###Average Daily Patterns
+```{r daily.pattern}
+#plot line chart
+daily.average.chart <- ggplot() + geom_line(data = activity.by.interval, aes(interval, mean.steps)) + ggtitle("Average Daily Steps")
+
+print(daily.average.chart)
+
+#find maximum interval
+max.interval <- activity.by.interval$interval[which.max(activity.by.interval$mean.steps)]
+
+```
+The interval that on average has the maximum number of steps is `r max.interval`.
+
+## Imputing missing values (Template Heading)
+###Imput Missing Values and Process for Daily and Interval Statistics
+```{r imput.missing}
+#Get row numbers with missing steps
+missing.rows <- which(is.na(activity.data$steps))
+
+activity.data.corrected <- activity.data
+
+#loop to replace rows with missing values with interval average
+for (row in missing.rows) {
+  activity.data.corrected$steps[row] <- activity.by.interval$mean.steps[activity.by.interval$interval == activity.data.corrected$interval[row]]
+}
 
 
+activity.corrected.by.day <- group_by(activity.data.corrected, date) %>% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))
 
-## What is mean total number of steps taken per day?
-
-
-
-## What is the average daily activity pattern?
+activity.corrected.by.interval <- group_by(activity.data.corrected, interval) %>% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))
+```
 
 
+###Total Steps Per Day as Histogram and Table of Daily Statistics
+```{r histogram,corrected}
+total.hist.corrected <- ggplot() + geom_histogram(data = activity.corrected.by.day, aes(total.steps), binwidth = 2000) +
+              ggtitle("Histogram of Total Steps Each Data")
 
-## Imputing missing values
+print(total.hist.corrected)
+```
 
+## Are there differences in activity patterns between weekdays and weekends? (Template Heading) 
+###Weekend vs Weekday Analysis using Corrected Dataset
+```{r weekend.weekday.analysis}
+#add weekday and weekend labels
+activity.data.corrected$weekday <- weekdays(as.POSIXct(as.character(activity.data.corrected$date)))
+activity.data.corrected$label[activity.data.corrected$weekday == "Saturday" | activity.data.corrected$weekday == "Sunday"] <- "Weekend"
 
+activity.data.corrected$label[is.na(activity.data.corrected$label)] <- "Weekday"
 
-## Are there differences in activity patterns between weekdays and weekends?
+activity.data.corrected$label <- factor(activity.data.corrected$label)
+
+activity.week.by.interval <- group_by(activity.data.corrected, label, interval) %>% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))
+
+#plot panel plot
+activity.panel <- ggplot() + geom_line(data = activity.week.by.interval, aes(interval, mean.steps)) +
+                  facet_grid(label~.) + ggtitle("Weekday vs Weekend - Average Daily Steps")
+
+print(activity.panel)
+```
+It is observed that the weekend activity does not see as high a peak activity level.
+
