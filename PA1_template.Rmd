@@ -31,7 +31,7 @@ opts_chunk$set(echo = T)
 ```
 
 ## Loading and preprocessing the data (Template Heading)
-###Download Data and Process Data
+Download Data and Process Data
 ``` {r data.download}
 #Download and Unzip Data
 data.url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
@@ -48,7 +48,7 @@ activity.by.interval <- group_by(activity.data, interval) %>% summarise(mean.ste
 ```
 
 ## What is mean total number of steps taken per day? (Template Heading)
-###Total Steps Per Day as Histogram and Table of Daily Statistics
+Total Steps Per Day as Histogram and Table of Daily Statistics
 ```{r histogram}
 #plot histogram
 total.hist <- ggplot() + geom_histogram(data = activity.by.day, aes(total.steps), binwidth = 2000) +
@@ -61,7 +61,7 @@ kable(activity.by.day, caption = "Daily Summary Table")
 ```
 
 ## What is the average daily activity pattern? (Template Heading)
-###Average Daily Patterns
+Average Daily Patterns
 ```{r daily.pattern}
 #plot line chart
 daily.average.chart <- ggplot() + geom_line(data = activity.by.interval, aes(interval, mean.steps)) + ggtitle("Average Daily Steps")
@@ -75,7 +75,9 @@ max.interval <- activity.by.interval$interval[which.max(activity.by.interval$mea
 The interval that on average has the maximum number of steps is `r max.interval`.
 
 ## Imputing missing values (Template Heading)
-###Imput Missing Values and Process for Daily and Interval Statistics
+Imput Missing Values and Process for Daily and Interval Statistics
+
+Strategy: Loop round rows with missing data and replace with average for the corresponding interval
 ```{r imput.missing}
 #Get row numbers with missing steps
 missing.rows <- which(is.na(activity.data$steps))
@@ -94,7 +96,7 @@ activity.corrected.by.interval <- group_by(activity.data.corrected, interval) %>
 ```
 
 
-###Total Steps Per Day as Histogram and Table of Daily Statistics
+Total Steps Per Day as Histogram and Table of Daily Statistics
 ```{r histogram,corrected}
 total.hist.corrected <- ggplot() + geom_histogram(data = activity.corrected.by.day, aes(total.steps), binwidth = 2000) +
               ggtitle("Histogram of Total Steps Each Data")
@@ -103,7 +105,7 @@ print(total.hist.corrected)
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends? (Template Heading) 
-###Weekend vs Weekday Analysis using Corrected Dataset
+Weekend vs Weekday Analysis using Corrected Dataset
 ```{r weekend.weekday.analysis}
 #add weekday and weekend labels
 activity.data.corrected$weekday <- weekdays(as.POSIXct(as.character(activity.data.corrected$date)))

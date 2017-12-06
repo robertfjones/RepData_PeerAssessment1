@@ -148,8 +148,7 @@ opts_chunk$set(echo = T)</code></pre>
 </div>
 <div id="loading-and-preprocessing-the-data-template-heading" class="section level2">
 <h2>Loading and preprocessing the data (Template Heading)</h2>
-<div id="download-data-and-process-data" class="section level3">
-<h3>Download Data and Process Data</h3>
+<p>Download Data and Process Data</p>
 <pre class="r"><code>#Download and Unzip Data
 data.url &lt;- &quot;https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip&quot;
 download.file(data.url,destfile = &quot;activity.zip&quot;)
@@ -169,11 +168,9 @@ activity.by.day &lt;- group_by(activity.data, date) %&gt;% summarise(mean.steps 
 
 activity.by.interval &lt;- group_by(activity.data, interval) %&gt;% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))</code></pre>
 </div>
-</div>
 <div id="what-is-mean-total-number-of-steps-taken-per-day-template-heading" class="section level2">
 <h2>What is mean total number of steps taken per day? (Template Heading)</h2>
-<div id="total-steps-per-day-as-histogram-and-table-of-daily-statistics" class="section level3">
-<h3>Total Steps Per Day as Histogram and Table of Daily Statistics</h3>
+<p>Total Steps Per Day as Histogram and Table of Daily Statistics</p>
 <pre class="r"><code>#plot histogram
 total.hist &lt;- ggplot() + geom_histogram(data = activity.by.day, aes(total.steps), binwidth = 2000) +
               ggtitle(&quot;Histogram of Total Steps Each Data&quot;)
@@ -564,11 +561,9 @@ kable(activity.by.day, caption = &quot;Daily Summary Table&quot;)</code></pre>
 </tbody>
 </table>
 </div>
-</div>
 <div id="what-is-the-average-daily-activity-pattern-template-heading" class="section level2">
 <h2>What is the average daily activity pattern? (Template Heading)</h2>
-<div id="average-daily-patterns" class="section level3">
-<h3>Average Daily Patterns</h3>
+<p>Average Daily Patterns</p>
 <pre class="r"><code>#plot line chart
 daily.average.chart &lt;- ggplot() + geom_line(data = activity.by.interval, aes(interval, mean.steps)) + ggtitle(&quot;Average Daily Steps&quot;)
 
@@ -581,11 +576,10 @@ print(daily.average.chart)</code></pre>
 max.interval &lt;- activity.by.interval$interval[which.max(activity.by.interval$mean.steps)]</code></pre>
 <p>The interval that on average has the maximum number of steps is 835.</p>
 </div>
-</div>
 <div id="imputing-missing-values-template-heading" class="section level2">
 <h2>Imputing missing values (Template Heading)</h2>
-<div id="imput-missing-values-and-process-for-daily-and-interval-statistics" class="section level3">
-<h3>Imput Missing Values and Process for Daily and Interval Statistics</h3>
+<p>Imput Missing Values and Process for Daily and Interval Statistics</p>
+<p>Strategy: Loop round rows with missing data and replace with average for the corresponding interval</p>
 <pre class="r"><code>#Get row numbers with missing steps
 missing.rows &lt;- which(is.na(activity.data$steps))
 
@@ -600,9 +594,7 @@ for (row in missing.rows) {
 activity.corrected.by.day &lt;- group_by(activity.data.corrected, date) %&gt;% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))
 
 activity.corrected.by.interval &lt;- group_by(activity.data.corrected, interval) %&gt;% summarise(mean.steps = mean(steps, na.rm = T), total.steps = sum(steps, na.rm = T), median.steps = median(steps, na.rm = T))</code></pre>
-</div>
-<div id="total-steps-per-day-as-histogram-and-table-of-daily-statistics-1" class="section level3">
-<h3>Total Steps Per Day as Histogram and Table of Daily Statistics</h3>
+<p>Total Steps Per Day as Histogram and Table of Daily Statistics</p>
 <pre class="r"><code>total.hist.corrected &lt;- ggplot() + geom_histogram(data = activity.corrected.by.day, aes(total.steps), binwidth = 2000) +
               ggtitle(&quot;Histogram of Total Steps Each Data&quot;)
 
@@ -612,11 +604,9 @@ print(total.hist.corrected)</code></pre>
 <p class="caption">plot of chunk histogram,corrected</p>
 </div>
 </div>
-</div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends-template-heading" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends? (Template Heading)</h2>
-<div id="weekend-vs-weekday-analysis-using-corrected-dataset" class="section level3">
-<h3>Weekend vs Weekday Analysis using Corrected Dataset</h3>
+<p>Weekend vs Weekday Analysis using Corrected Dataset</p>
 <pre class="r"><code>#add weekday and weekend labels
 activity.data.corrected$weekday &lt;- weekdays(as.POSIXct(as.character(activity.data.corrected$date)))
 activity.data.corrected$label[activity.data.corrected$weekday == &quot;Saturday&quot; | activity.data.corrected$weekday == &quot;Sunday&quot;] &lt;- &quot;Weekend&quot;
@@ -637,7 +627,6 @@ print(activity.panel)</code></pre>
 <p class="caption">plot of chunk weekend.weekday.analysis</p>
 </div>
 <p>It is observed that the weekend activity does not see as high a peak activity level.</p>
-</div>
 </div>
 </div>
 

@@ -16,7 +16,7 @@
 8. Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 9. All of the R code needed to reproduce the results (numbers, plots, etc.) in the report
 
-##Setup
+##Setup 
 
 ```r
 #Open packages
@@ -31,7 +31,7 @@ opts_chunk$set(echo = T)
 ```
 
 ## Loading and preprocessing the data (Template Heading)
-###Download Data and Process Data
+Download Data and Process Data
 
 ```r
 #Download and Unzip Data
@@ -61,7 +61,7 @@ activity.by.interval <- group_by(activity.data, interval) %>% summarise(mean.ste
 ```
 
 ## What is mean total number of steps taken per day? (Template Heading)
-###Total Steps Per Day as Histogram and Table of Daily Statistics
+Total Steps Per Day as Histogram and Table of Daily Statistics
 
 ```r
 #plot histogram
@@ -145,7 +145,7 @@ kable(activity.by.day, caption = "Daily Summary Table")
 |2012-11-30 |        NaN|           0|           NA|
 
 ## What is the average daily activity pattern? (Template Heading)
-###Average Daily Patterns
+Average Daily Patterns
 
 ```r
 #plot line chart
@@ -163,7 +163,9 @@ max.interval <- activity.by.interval$interval[which.max(activity.by.interval$mea
 The interval that on average has the maximum number of steps is 835.
 
 ## Imputing missing values (Template Heading)
-###Imput Missing Values and Process for Daily and Interval Statistics
+Imput Missing Values and Process for Daily and Interval Statistics
+
+Strategy: Loop round rows with missing data and replace with average for the corresponding interval
 
 ```r
 #Get row numbers with missing steps
@@ -183,7 +185,7 @@ activity.corrected.by.interval <- group_by(activity.data.corrected, interval) %>
 ```
 
 
-###Total Steps Per Day as Histogram and Table of Daily Statistics
+Total Steps Per Day as Histogram and Table of Daily Statistics
 
 ```r
 total.hist.corrected <- ggplot() + geom_histogram(data = activity.corrected.by.day, aes(total.steps), binwidth = 2000) +
@@ -195,7 +197,7 @@ print(total.hist.corrected)
 ![plot of chunk histogram,corrected](figure/histogram,corrected-1.png)
 
 ## Are there differences in activity patterns between weekdays and weekends? (Template Heading) 
-###Weekend vs Weekday Analysis using Corrected Dataset
+Weekend vs Weekday Analysis using Corrected Dataset
 
 ```r
 #add weekday and weekend labels
