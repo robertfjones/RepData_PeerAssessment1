@@ -121,5 +121,6 @@ activity.panel <- ggplot() + geom_line(data = activity.week.by.interval, aes(int
 
 print(activity.panel)
 ```
+
 It is observed that the weekend activity does not see as high a peak activity level.
 
